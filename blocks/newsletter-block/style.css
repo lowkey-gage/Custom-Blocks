@@ -1,0 +1,65 @@
+.newsletter-block {
+    /* Stack block contents vertically: title above image, text below image */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.newsletter-block img {
+    max-width: 200px;
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.newsletter-block .source {
+    font-size: 0.85em;
+    color: #666;
+}
+
+.newsletter-block .expanded-text[hidden] {
+    /* hide only when the boolean hidden attribute is present so JS toggle works */
+    display: none;
+}
+.newsletter-block .expanded-text {
+    display: block;
+}
+
+/* Front-end: target the WordPress-generated block class so styles apply when the block
+   is rendered on the site (the root class is usually `wp-block-<namespace>-<name>`).
+   This ensures images using a pasted URL don't overflow the layout. */
+.wp-block-custom-blocks-plugin-newsletter-block {
+    /* Ensure front-end stacks content vertically like the editor */
+    display: block;
+    margin: 20px 0;
+}
+
+/* Provide consistent spacing between direct children of the block */
+.wp-block-custom-blocks-plugin-newsletter-block > * + * {
+    margin-top: 12px;
+}
+
+.wp-block-custom-blocks-plugin-newsletter-block img,
+.wp-block-custom-blocks-plugin-newsletter-block .newsletter-block img {
+    /* Constrain images to a sensible default width while remaining responsive. */
+    max-width: 200px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.wp-block-custom-blocks-plugin-newsletter-block .source {
+    font-size: 0.85em;
+    color: #666;
+}
+
+.wp-block-custom-blocks-plugin-newsletter-block .expanded-text[hidden] {
+    display: none;
+}
+.wp-block-custom-blocks-plugin-newsletter-block .expanded-text {
+    display: block;
+}

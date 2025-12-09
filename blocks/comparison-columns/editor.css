@@ -1,0 +1,45 @@
+/* Editor-only styles for Comparison Columns */
+.comparison-columns .comparison-heading {
+  text-align: center;
+  margin: 0 0 14px;
+}
+.comparison-columns .comparison-col {
+  transition: outline-color 0.2s ease, box-shadow 0.2s ease;
+}
+.comparison-columns .comparison-list li {
+  list-style: disc;
+}
+
+/* Scoped fix: prevent reversed text in editor */
+.comparison-columns,
+.comparison-columns * {
+  direction: ltr !important;
+  unicode-bidi: normal !important;
+  writing-mode: horizontal-tb !important;
+  transform: none !important;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.comparison-title {
+  margin: 8px 0 4px;
+}
+.comparison-list {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+.comparison-image {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.comparison-image img {
+  max-width: 96px;
+  max-height: 96px;
+  object-fit: cover;
+  border-radius: 6px;
+}

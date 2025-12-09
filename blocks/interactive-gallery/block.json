@@ -1,0 +1,61 @@
+{
+  "apiVersion": 2,
+  "name": "custom-blocks-plugin/interactive-gallery",
+  "title": "Interactive Carousel",
+  "category": "media",
+  "icon": "images-alt2",
+  "description": "An auto-rotating carousel with navigation buttons and indicator dots.",
+  "supports": {
+    "html": true,
+    "align": ["wide", "full"]
+  },
+  "attributes": {
+    "images": {
+      "type": "array",
+      "default": [],
+      "source": "query",
+      "selector": ".gallery-slide",
+      "query": {
+        "url": {
+          "type": "string",
+          "source": "attribute",
+          "attribute": "src",
+          "selector": ".gallery-image"
+        },
+        "alt": {
+          "type": "string",
+          "source": "attribute",
+          "attribute": "alt",
+          "selector": ".gallery-image",
+          "default": ""
+        },
+        "caption": {
+          "type": "string",
+          "source": "text",
+          "selector": ".gallery-caption",
+          "default": ""
+        },
+        "id": {
+          "type": "number"
+        }
+      }
+    },
+    "currentImageIndex": {
+      "type": "number",
+      "default": 0
+    },
+    "autoplay": {
+      "type": "boolean",
+      "default": true
+    },
+    "autoplaySpeed": {
+      "type": "number",
+      "default": 3000
+    }
+  },
+  "textdomain": "custom-blocks-plugin",
+  "editorScript": "file:./index.build.js",
+  "editorStyle": "file:./editor.css",
+  "style": "file:./style.css",
+  "viewScript": "file:./view.js"
+}

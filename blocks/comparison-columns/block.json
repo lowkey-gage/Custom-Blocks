@@ -1,0 +1,27 @@
+{
+  "apiVersion": 2,
+  "name": "custom-blocks-plugin/comparison-columns",
+  "title": "Comparison Columns",
+  "category": "layout",
+  "icon": "columns",
+  "description": "Compare two similar things side by side.",
+  "supports": {
+    "align": ["wide", "full"],
+    "spacing": { "padding": true, "margin": true, "blockGap": true },
+    "color": { "text": true, "background": true, "link": true }
+  },
+  "attributes": {
+    "mainTitle": { "type": "string", "source": "html", "selector": ".comparison-heading" },
+    "leftTitle": { "type": "string", "source": "html", "selector": ".comparison-col.left .comparison-title" },
+    "rightTitle": { "type": "string", "source": "html", "selector": ".comparison-col.right .comparison-title" },
+    "leftItems": { "type": "array", "source": "children", "selector": ".comparison-col.left .comparison-list" },
+    "rightItems": { "type": "array", "source": "children", "selector": ".comparison-col.right .comparison-list" },
+    "highlight": { "type": "string", "enum": ["none", "left", "right"], "default": "none" },
+    "showLabels": { "type": "boolean", "default": false },
+    "leftLabel": { "type": "string", "default": "Option A" },
+    "rightLabel": { "type": "string", "default": "Option B" }
+  },
+  "editorScript": "file:./index.js",
+  "style": "file:./style.css",
+  "editorStyle": "file:./editor.css"
+}

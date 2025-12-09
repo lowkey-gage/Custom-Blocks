@@ -1,0 +1,189 @@
+.interactive-gallery {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px 100px;
+    background: #f0f0f0;
+    border-radius: 8px;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.gallery-image-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    min-height: 500px;
+    padding: 20px 0;
+}
+
+.gallery-slide {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 100%;
+    max-width: 800px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translateX(-50%) scale(0.85);
+    pointer-events: none;
+}
+
+.gallery-slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 5;
+    transform: translateX(-50%) scale(1);
+    pointer-events: auto;
+}
+
+.gallery-slide.prev {
+    opacity: 0.4;
+    visibility: visible;
+    transform: translateX(-90%) scale(0.8);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.gallery-slide.next {
+    opacity: 0.4;
+    visibility: visible;
+    transform: translateX(-10%) scale(0.8);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.gallery-slide {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 100%;
+    max-width: 800px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translateX(-50%) scale(0.8);
+}
+
+.gallery-slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 2;
+    transform: translateX(-50%) scale(1);
+}
+
+.gallery-slide.prev {
+    opacity: 0.5;
+    visibility: visible;
+    transform: translateX(-85%) scale(0.85);
+    z-index: 1;
+}
+
+.gallery-slide.next {
+    opacity: 0.5;
+    visibility: visible;
+    transform: translateX(-15%) scale(0.85);
+    z-index: 1;
+}
+
+.gallery-image-wrapper {
+    width: 100%;
+    position: relative;
+    /* Fixed, responsive height so all images occupy the same vertical space */
+    height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 8px;
+    overflow: hidden;
+}
+
+.gallery-image {
+    /* Force same height for every image; cover mode makes them visually consistent */
+    width: auto;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Responsive gallery heights */
+@media (max-width: 900px) {
+    .gallery-image-wrapper { height: 360px; }
+}
+@media (max-width: 600px) {
+    .gallery-image-wrapper { height: 240px; }
+}
+
+.gallery-caption {
+    font-size: 0.85rem;
+    color: #666;
+    text-align: center;
+    margin-top: 4px;
+    font-style: italic;
+    max-width: 600px;
+    line-height: 1.4;
+}
+
+.nav-button {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    /* Keep buttons in fixed positions regardless of image dimensions */
+    pointer-events: auto;
+}
+
+.nav-button.prev {
+    left: 24px;
+}
+
+.nav-button.next {
+    right: 24px;
+}
+
+.nav-button:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.nav-button:disabled {
+    background: rgba(0, 0, 0, 0.2);
+    cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .nav-button {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+}
