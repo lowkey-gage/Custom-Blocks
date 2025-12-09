@@ -1,0 +1,73 @@
+/* Frontend styles for Testimonial Slider */
+.testimonial-slider {
+  position: relative;
+  overflow: hidden;
+}
+.testimonial-slider .tsl-slides {
+  position: relative;
+}
+.testimonial-slider .tsl-slide {
+  opacity: 0;
+  transform: translateX(0);
+  transition: opacity 0.6s ease-in-out;
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(16px, 3vw, 32px);
+}
+.testimonial-slider.transition-slide .tsl-slide {
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  transform: translateX(100%);
+}
+.testimonial-slider .tsl-slide.active {
+  opacity: 1;
+}
+.testimonial-slider.transition-slide .tsl-slide.active { transform: translateX(0); }
+
+/* Content */
+.tsl-quote {
+  font-size: clamp(18px, 2.4vw, 22px);
+  font-style: italic;
+  margin: 0 0 12px 0;
+  text-align: center;
+}
+.tsl-meta {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: center;
+}
+.tsl-avatar {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.tsl-author { font-weight: 700; }
+.tsl-role { opacity: 0.8; font-size: 0.95em; }
+.tsl-rating { color: #f5b400; font-size: 1.1em; }
+
+/* Navigation */
+.tsl-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: color-mix(in srgb, var(--wp--preset--color--base, #fff) 80%, transparent);
+  border: 1px solid var(--wp--preset--color--contrast-2, #ddd);
+  width: 36px; height: 36px; border-radius: 18px;
+  display: grid; place-items: center;
+  cursor: pointer;
+}
+.tsl-nav.prev { left: 8px; }
+.tsl-nav.next { right: 8px; }
+
+/* Dots */
+.tsl-dots { display: flex; justify-content: center; gap: 8px; margin-top: 12px; }
+.tsl-dots .dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--wp--preset--color--contrast-3, #bbb);
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.tsl-dots .dot.active { background: var(--wp--preset--color--primary, #3858e9); transform: scale(1.15); }
+.tsl-dots .dot:hover { transform: scale(1.1); }

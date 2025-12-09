@@ -1,0 +1,58 @@
+.wp-block-custom-blocks-plugin-interactive-gallery {
+    margin: 0;
+}
+
+.wp-block-custom-blocks-plugin-interactive-gallery .gallery-controls-top {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+    padding: 8px;
+    background: #f8f9f9;
+    border-radius: 4px;
+}
+
+.gallery-edit-button {
+    margin: 0 !important;
+}
+
+/* Upload UI styling */
+.interactive-gallery-placeholder {
+    padding: 40px 20px !important;
+    background: #f8f9f9 !important;
+    border: 2px dashed #ccc !important;
+}
+
+.gallery-upload-instructions {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.gallery-upload-instructions ul {
+    margin: 10px 0 20px 20px;
+    list-style-type: disc;
+}
+
+.gallery-upload-instructions li {
+    margin: 8px 0;
+    color: #555;
+}
+
+.gallery-upload-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.gallery-upload-button {
+    padding: 12px 24px !important;
+    height: auto !important;
+    font-size: 16px !important;
+}
+
+.gallery-upload-hint {
+    font-size: 0.85em;
+    color: #666;
+    margin: 0;
+    font-style: italic;
+}

@@ -1,0 +1,31 @@
+.wp-block-custom-blocks-plugin-newsletter-block {
+    border: 1px solid #cccccc;
+    padding: 10px;
+    margin: 10px 0;
+    display: block;
+}
+
+.wp-block-custom-blocks-plugin-newsletter-block > * + * {
+    margin-top: 12px;
+}
+
+.wp-block-custom-blocks-plugin-newsletter-block img,
+.wp-block-custom-blocks-plugin-newsletter-block .newsletter-block img {
+    max-width: 200px;
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.wp-block-custom-blocks-plugin-newsletter-block .source {
+    font-size: 0.85em;
+    color: #666;
+}
+
+.wp-block-custom-blocks-plugin-newsletter-block .expanded-text[hidden] {
+    display: none;
+}
+.wp-block-custom-blocks-plugin-newsletter-block .expanded-text {
+    display: block;
+}

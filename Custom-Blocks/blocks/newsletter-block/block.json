@@ -1,0 +1,22 @@
+{
+  "apiVersion": 2,
+  "name": "custom-blocks-plugin/newsletter-block",
+  "title": "Newsletter Block",
+  "category": "layout",
+  "icon": "media-document",
+  "description": "A newsletter-style block with a Title, image, source description, and readable expandable text.",
+  "supports": {
+    "html": true
+  },
+  "attributes": {
+    "heading": { "type": "string", "default": "" },
+    "imageUrl": { "type": "string", "default": "" },
+    "imageDesc": { "type": "string", "default": "" },
+    "mainText": { "type": "string", "default": "" },
+    "expandedText": { "type": "string", "default": "" },
+    "isExpanded": { "type": "boolean", "default": false }
+  },
+  "editorScript": "file:./index.build.js",
+  "editorStyle": "file:./editor.css",
+  "style": "file:./style.css"
+}

@@ -1,0 +1,4 @@
+/* Editor styles for Testimonial Slider */
+.testimonial-slider-editor .tsl-items { display: grid; gap: 12px; margin-bottom: 12px; }
+.tsl-item-card { padding: 12px; border: 1px solid #ddd; border-radius: 8px; background: #fff; }
+.tsl-item-card .components-base-control { margin-bottom: 8px; }
