@@ -14,7 +14,7 @@
 function cbp_register_blocks() {
     if ( function_exists( 'register_block_type' ) ) {
         register_block_type( __DIR__ . '/blocks/newsletter-block' );
-        // register_block_type( __DIR__ . '/blocks/interactive-gallery' );
+        register_block_type( __DIR__ . '/blocks/interactive-gallery' );
         register_block_type( __DIR__ . '/blocks/comparison-columns' );
         register_block_type( __DIR__ . '/blocks/testimonial-slider' );
     }
@@ -30,13 +30,13 @@ function my_block_enqueue_scripts() {
         true
     );
 
-    // wp_enqueue_script(
-    //     'interactive-gallery-view',
-    //     plugin_dir_url(__FILE__) . 'blocks/interactive-gallery/view.js',
-    //     array(),
-    //     '1.0.0',
-    //     true
-    // );
+    wp_enqueue_script(
+        'interactive-gallery-view',
+        plugin_dir_url(__FILE__) . 'blocks/interactive-gallery/view.js',
+        array(),
+        '1.0.0',
+        true
+    );
 }
 // Enqueue scripts on the frontend only (avoid running DOM code inside the editor)
 add_action('wp_enqueue_scripts', 'my_block_enqueue_scripts');

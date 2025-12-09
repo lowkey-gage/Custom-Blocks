@@ -32,12 +32,8 @@ export default function save({ attributes }) {
                         return (
                         <div 
                             key={(image && image.id) ? image.id : index} 
-                            className="gallery-slide"
+                            className={`gallery-slide${index === currentImageIndex ? ' active' : ''}`}
                             data-index={index}
-                            style={{
-                                opacity: index === currentImageIndex ? 1 : 0,
-                                visibility: index === currentImageIndex ? 'visible' : 'hidden'
-                            }}
                         >
                             <div className="gallery-image-wrapper">
                                 <img

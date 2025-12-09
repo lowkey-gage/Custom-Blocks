@@ -45,6 +45,27 @@
 .comparison-columns .comparison-list li {
   margin: 0.25em 0;
 }
+/* Scoped fix: prevent reversed text on frontend */
+.comparison-columns,
+.comparison-columns * {
+  direction: ltr;
+  unicode-bidi: normal;
+  writing-mode: horizontal-tb;
+  transform: none;
+}
+/* Column image */
+.comparison-columns .comparison-image {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.comparison-columns .comparison-image img {
+  max-width: 96px;
+  max-height: 96px;
+  object-fit: cover;
+  border-radius: 6px;
+}
 /* Highlights */
 .comparison-columns.highlight-left .comparison-col.left,
 .comparison-columns.highlight-right .comparison-col.right {

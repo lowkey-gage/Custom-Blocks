@@ -2,56 +2,59 @@
   const { registerBlockType } = wp.blocks;
   const { __ } = wp.i18n;
   const be = wp.blockEditor || wp.editor;
-  const { RichText, InspectorControls, useBlockProps } = be;
-  const { PanelBody, SelectControl, ToggleControl, TextControl } = wp.components;
+  const { RichText, MediaUpload, MediaUploadCheck, InspectorControls, useBlockProps } = be;
+  const { PanelBody, TextControl, Button } = wp.components;
 
   registerBlockType('custom-blocks-plugin/comparison-columns', {
     title: __('Comparison Columns', 'custom-blocks-plugin'),
-    description: __('Compare two similar things side by side.', 'custom-blocks-plugin'),
+    description: __('Two columns with a small image and bullet points.', 'custom-blocks-plugin'),
     icon: 'columns',
     category: 'layout',
     attributes: {
       mainTitle: { type: 'string', source: 'html', selector: 'h2.comparison-heading' },
       leftTitle: { type: 'string', source: 'html', selector: '.comparison-col.left h3.comparison-title' },
       rightTitle: { type: 'string', source: 'html', selector: '.comparison-col.right h3.comparison-title' },
-      leftItems: {
-        type: 'array',
-        source: 'children',
-        selector: '.comparison-col.left ul.comparison-list li',
-        default: []
-      },
-      rightItems: {
-        type: 'array',
-        source: 'children',
-        selector: '.comparison-col.right ul.comparison-list li',
-        default: []
-      },
-      highlight: { type: 'string', default: 'none' },
-      showLabels: { type: 'boolean', default: false },
-      leftLabel: { type: 'string', default: 'Option A' },
-      rightLabel: { type: 'string', default: 'Option B' }
+      leftImageUrl: { type: 'string', default: '' },
+      leftImageAlt: { type: 'string', default: '' },
+      rightImageUrl: { type: 'string', default: '' },
+      rightImageAlt: { type: 'string', default: '' },
+      leftItems: { type: 'array', source: 'children', selector: '.comparison-col.left ul.comparison-list li', default: [] },
+      rightItems: { type: 'array', source: 'children', selector: '.comparison-col.right ul.comparison-list li', default: [] }
     },
 
     edit(props) {
-      const {
-        attributes: {
-          mainTitle, leftTitle, rightTitle, leftItems, rightItems,
-          highlight = 'none', showLabels = false, leftLabel = 'Option A', rightLabel = 'Option B'
-        },
-        setAttributes
-      } = props;
-
-      // Normalize legacy strings -> arrays for list items
-      const safeLeftItems = Array.isArray(leftItems)
-        ? leftItems
-        : (typeof leftItems === 'string' ? stringToLiArray(leftItems) : []);
-      const safeRightItems = Array.isArray(rightItems)
-        ? rightItems
-        : (typeof rightItems === 'string' ? stringToLiArray(rightItems) : []);
+      const { attributes, setAttributes } = props;
+      const { mainTitle, leftTitle, rightTitle, leftImageUrl, leftImageAlt, rightImageUrl, rightImageAlt, leftItems, rightItems } = attributes;
 
       const blockProps = (be && be.useBlockProps)
-        ? be.useBlockProps({ className: `comparison-columns highlight-${highlight}` })
-        : { className: `comparison-columns highlight-${highlight}` };
+        ? be.useBlockProps({ className: 'comparison-columns' })
+        : { className: 'comparison-columns' };
+
+      const renderImageControl = (position) => {
+        const urlKey = position === 'left' ? 'leftImageUrl' : 'rightImageUrl';
+        const altKey = position === 'left' ? 'leftImageAlt' : 'rightImageAlt';
+        const url = attributes[urlKey];
+        const alt = attributes[altKey];
+        return wp.element.createElement(
+          'div',
+          { className: 'comparison-image' },
+          url
+            ? wp.element.createElement('img', { src: url, alt: alt || '' })
+            : null,
+          wp.element.createElement(MediaUploadCheck, null,
+            wp.element.createElement(MediaUpload, {
+              onSelect: (media) => setAttributes({ [urlKey]: media?.url || '', [altKey]: media?.alt || '' }),
+              allowedTypes: ['image'],
+              render: ({ open }) => wp.element.createElement(Button, { onClick: open, isSecondary: true }, url ? __('Replace image', 'custom-blocks-plugin') : __('Add image', 'custom-blocks-plugin'))
+            })
+          ),
+          wp.element.createElement(TextControl, {
+            label: __('Alt text', 'custom-blocks-plugin'),
+            value: alt,
+            onChange: (val) => setAttributes({ [altKey]: val })
+          })
+        );
+      };
 
       return wp.element.createElement(
         wp.element.Fragment,
@@ -61,31 +64,11 @@
           null,
           wp.element.createElement(
             PanelBody,
-            { title: __('Settings', 'custom-blocks-plugin'), initialOpen: true },
-            wp.element.createElement(SelectControl, {
-              label: __('Highlight', 'custom-blocks-plugin'),
-              value: highlight,
-              options: [
-                { label: __('None', 'custom-blocks-plugin'), value: 'none' },
-                { label: __('Left', 'custom-blocks-plugin'), value: 'left' },
-                { label: __('Right', 'custom-blocks-plugin'), value: 'right' }
-              ],
-              onChange: (val) => setAttributes({ highlight: val })
-            }),
-            wp.element.createElement(ToggleControl, {
-              label: __('Show labels above columns', 'custom-blocks-plugin'),
-              checked: showLabels,
-              onChange: (val) => setAttributes({ showLabels: val })
-            }),
-            showLabels && wp.element.createElement(TextControl, {
-              label: __('Left label', 'custom-blocks-plugin'),
-              value: leftLabel,
-              onChange: (val) => setAttributes({ leftLabel: val })
-            }),
-            showLabels && wp.element.createElement(TextControl, {
-              label: __('Right label', 'custom-blocks-plugin'),
-              value: rightLabel,
-              onChange: (val) => setAttributes({ rightLabel: val })
+            { title: __('Block Settings', 'custom-blocks-plugin'), initialOpen: true },
+            wp.element.createElement(TextControl, {
+              label: __('Main title', 'custom-blocks-plugin'),
+              value: mainTitle || '',
+              onChange: (val) => setAttributes({ mainTitle: val })
             })
           )
         ),
@@ -101,13 +84,6 @@
             value: mainTitle,
             onChange: (val) => setAttributes({ mainTitle: val })
           }),
-          showLabels &&
-            wp.element.createElement(
-              'div',
-              { className: 'comparison-labels' },
-              wp.element.createElement('div', { className: 'label left' }, leftLabel || __('Option A', 'custom-blocks-plugin')),
-              wp.element.createElement('div', { className: 'label right' }, rightLabel || __('Option B', 'custom-blocks-plugin'))
-            ),
 
           wp.element.createElement(
             'div',
@@ -116,6 +92,7 @@
             wp.element.createElement(
               'div',
               { className: 'comparison-col left' },
+              renderImageControl('left'),
               wp.element.createElement(RichText, {
                 tagName: 'h3',
                 className: 'comparison-title',
@@ -126,8 +103,8 @@
               wp.element.createElement(RichText, {
                 tagName: 'ul',
                 className: 'comparison-list',
-                placeholder: __('Add points… Press Enter for new item', 'custom-blocks-plugin'),
-                value: leftItems,
+                placeholder: __('Add bullet points… Press Enter', 'custom-blocks-plugin'),
+                value: Array.isArray(leftItems) ? leftItems : [],
                 onChange: (val) => setAttributes({ leftItems: val }),
                 multiline: 'li'
               })
@@ -136,6 +113,7 @@
             wp.element.createElement(
               'div',
               { className: 'comparison-col right' },
+              renderImageControl('right'),
               wp.element.createElement(RichText, {
                 tagName: 'h3',
                 className: 'comparison-title',
@@ -146,8 +124,8 @@
               wp.element.createElement(RichText, {
                 tagName: 'ul',
                 className: 'comparison-list',
-                placeholder: __('Add points… Press Enter for new item', 'custom-blocks-plugin'),
-                value: rightItems,
+                placeholder: __('Add bullet points… Press Enter', 'custom-blocks-plugin'),
+                value: Array.isArray(rightItems) ? rightItems : [],
                 onChange: (val) => setAttributes({ rightItems: val }),
                 multiline: 'li'
               })
@@ -158,43 +136,28 @@
     },
 
     save(props) {
-      const {
-        mainTitle, leftTitle, rightTitle, leftItems, rightItems,
-        highlight = 'none', showLabels = false, leftLabel = 'Option A', rightLabel = 'Option B'
-      } = props.attributes;
+      const { mainTitle, leftTitle, rightTitle, leftImageUrl, leftImageAlt, rightImageUrl, rightImageAlt, leftItems, rightItems } = props.attributes;
 
       const blockProps = (wp.blockEditor && wp.blockEditor.useBlockProps && wp.blockEditor.useBlockProps.save)
-        ? wp.blockEditor.useBlockProps.save({ className: `comparison-columns highlight-${highlight}` })
-        : { className: `comparison-columns highlight-${highlight}` };
+        ? wp.blockEditor.useBlockProps.save({ className: 'comparison-columns' })
+        : { className: 'comparison-columns' };
 
       const renderList = (items) =>
         wp.element.createElement(
           'ul',
           { className: 'comparison-list' },
-          (Array.isArray(items) ? items : []).map((text, i) =>
-            wp.element.createElement('li', { key: i }, text)
-          )
+          (Array.isArray(items) ? items : []).map((text, i) => wp.element.createElement('li', { key: i }, text))
         );
+
+      const renderImage = (url, alt) =>
+        url ? wp.element.createElement('img', { className: 'comparison-image', src: url, alt: alt || '' }) : null;
 
       return wp.element.createElement(
         'div',
         blockProps,
 
-        // Render heading only when content exists to match legacy posts
-        mainTitle
-          ? wp.element.createElement(RichText.Content, {
-              tagName: 'h2',
-              className: 'comparison-heading',
-              value: mainTitle
-            })
-          : null,
-        showLabels &&
-          wp.element.createElement(
-            'div',
-            { className: 'comparison-labels' },
-            wp.element.createElement('div', { className: 'label left' }, leftLabel || 'Option A'),
-            wp.element.createElement('div', { className: 'label right' }, rightLabel || 'Option B')
-          ),
+        mainTitle ? wp.element.createElement(RichText.Content, { tagName: 'h2', className: 'comparison-heading', value: mainTitle }) : null,
+
         wp.element.createElement(
           'div',
           { className: 'comparison-grid' },
@@ -202,117 +165,20 @@
           wp.element.createElement(
             'div',
             { className: 'comparison-col left' },
-            wp.element.createElement(RichText.Content, {
-              tagName: 'h3',
-              className: 'comparison-title',
-              value: leftTitle
-            }),
+            renderImage(leftImageUrl, leftImageAlt),
+            wp.element.createElement(RichText.Content, { tagName: 'h3', className: 'comparison-title', value: leftTitle }),
             renderList(leftItems)
           ),
 
           wp.element.createElement(
             'div',
             { className: 'comparison-col right' },
-            wp.element.createElement(RichText.Content, {
-              tagName: 'h3',
-              className: 'comparison-title',
-              value: rightTitle
-            }),
+            renderImage(rightImageUrl, rightImageAlt),
+            wp.element.createElement(RichText.Content, { tagName: 'h3', className: 'comparison-title', value: rightTitle }),
             renderList(rightItems)
           )
         )
       );
-    },
-
-    deprecated: [
-      {
-        // Legacy: lists saved as UL HTML strings
-        attributes: {
-          mainTitle: { type: 'string', source: 'html', selector: 'h2.comparison-heading' },
-          leftTitle: { type: 'string', source: 'html', selector: '.comparison-col.left h3.comparison-title' },
-          rightTitle: { type: 'string', source: 'html', selector: '.comparison-col.right h3.comparison-title' },
-          leftItems: { type: 'string', source: 'html', selector: '.comparison-col.left ul.comparison-list' },
-          rightItems: { type: 'string', source: 'html', selector: '.comparison-col.right ul.comparison-list' },
-          highlight: { type: 'string', default: 'none' },
-          showLabels: { type: 'boolean', default: false },
-          leftLabel: { type: 'string', default: 'Option A' },
-          rightLabel: { type: 'string', default: 'Option B' }
-        },
-        migrate(attrs) {
-          const toArray = (html) => stringToLiArray(html);
-          return {
-            ...attrs,
-            leftItems: toArray(attrs.leftItems),
-            rightItems: toArray(attrs.rightItems)
-          };
-        },
-        save(props) {
-          const {
-            mainTitle, leftTitle, rightTitle, leftItems = '', rightItems = '',
-            highlight = 'none', showLabels = false, leftLabel = 'Option A', rightLabel = 'Option B'
-          } = props.attributes;
-
-          const blockProps = (wp.blockEditor && wp.blockEditor.useBlockProps && wp.blockEditor.useBlockProps.save)
-            ? wp.blockEditor.useBlockProps.save({ className: `comparison-columns highlight-${highlight}` })
-            : { className: `comparison-columns highlight-${highlight}` };
-
-          return wp.element.createElement(
-            'div',
-            blockProps,
-            wp.element.createElement(RichText.Content, {
-              tagName: 'h2',
-              className: 'comparison-heading',
-              value: mainTitle
-            }),
-            showLabels &&
-              wp.element.createElement(
-                'div',
-                { className: 'comparison-labels' },
-                wp.element.createElement('div', { className: 'label left' }, leftLabel || 'Option A'),
-                wp.element.createElement('div', { className: 'label right' }, rightLabel || 'Option B')
-              ),
-            wp.element.createElement(
-              'div',
-              { className: 'comparison-grid' },
-              wp.element.createElement(
-                'div',
-                { className: 'comparison-col left' },
-                wp.element.createElement(RichText.Content, {
-                  tagName: 'h3',
-                  className: 'comparison-title',
-                  value: leftTitle
-                }),
-                wp.element.createElement(RichText.Content, {
-                  tagName: 'ul',
-                  className: 'comparison-list',
-                  value: leftItems
-                })
-              ),
-              wp.element.createElement(
-                'div',
-                { className: 'comparison-col right' },
-                wp.element.createElement(RichText.Content, {
-                  tagName: 'h3',
-                  className: 'comparison-title',
-                  value: rightTitle
-                }),
-                wp.element.createElement(RichText.Content, {
-                  tagName: 'ul',
-                  className: 'comparison-list',
-                  value: rightItems
-                })
-              )
-            )
-          );
-        }
-      }
-    ]
+    }
   });
 })();
-  // Helper to normalize legacy string lists
-  function stringToLiArray(html) {
-    if (!html || typeof html !== 'string') return [];
-    const div = document.createElement('div');
-    div.innerHTML = html;
-    return Array.from(div.querySelectorAll('li')).map(li => li.textContent || '');
-  }
