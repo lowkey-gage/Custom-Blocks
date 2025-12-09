@@ -1,0 +1,11 @@
+/* Editor-only styles for Comparison Columns */
+.comparison-columns .comparison-heading {
+  text-align: center;
+  margin: 0 0 14px;
+}
+.comparison-columns .comparison-col {
+  transition: outline-color 0.2s ease, box-shadow 0.2s ease;
+}
+.comparison-columns .comparison-list li {
+  list-style: disc;
+}

@@ -1,0 +1,27 @@
+{
+  "apiVersion": 2,
+  "name": "custom-blocks-plugin/testimonial-slider",
+  "title": "Testimonial Slider",
+  "category": "widgets",
+  "icon": "format-quote",
+  "description": "Rotating customer testimonials with avatars and ratings.",
+  "supports": {
+    "align": ["wide", "full"],
+    "html": true,
+    "spacing": { "padding": true, "margin": true, "blockGap": true },
+    "color": { "text": true, "background": true, "link": true }
+  },
+  "attributes": {
+    "testimonials": { "type": "array", "default": [] },
+    "autoplay": { "type": "boolean", "default": true },
+    "autoplaySpeed": { "type": "number", "default": 4000 },
+    "showDots": { "type": "boolean", "default": true },
+    "showArrows": { "type": "boolean", "default": true },
+    "transition": { "type": "string", "default": "fade" },
+    "pauseOnHover": { "type": "boolean", "default": true }
+  },
+  "editorScript": "file:./index.js",
+  "style": "file:./style.css",
+  "editorStyle": "file:./editor.css",
+  "viewScript": "file:./view.js"
+}
