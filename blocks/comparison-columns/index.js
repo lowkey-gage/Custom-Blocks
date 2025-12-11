@@ -11,15 +11,17 @@
     icon: 'columns',
     category: 'layout',
     attributes: {
-      mainTitle: { type: 'string', source: 'html', selector: 'h2.comparison-heading' },
-      leftTitle: { type: 'string', source: 'html', selector: '.comparison-col.left h3.comparison-title' },
-      rightTitle: { type: 'string', source: 'html', selector: '.comparison-col.right h3.comparison-title' },
+      // Align selectors with block.json
+      mainTitle: { type: 'string', source: 'html', selector: '.comparison-heading' },
+      leftTitle: { type: 'string', source: 'html', selector: '.comparison-col.left .comparison-title' },
+      rightTitle: { type: 'string', source: 'html', selector: '.comparison-col.right .comparison-title' },
       leftImageUrl: { type: 'string', default: '' },
       leftImageAlt: { type: 'string', default: '' },
       rightImageUrl: { type: 'string', default: '' },
       rightImageAlt: { type: 'string', default: '' },
-      leftItems: { type: 'array', source: 'children', selector: '.comparison-col.left ul.comparison-list li', default: [] },
-      rightItems: { type: 'array', source: 'children', selector: '.comparison-col.right ul.comparison-list li', default: [] }
+      // Children should be read from the list container per block.json
+      leftItems: { type: 'array', source: 'children', selector: '.comparison-col.left .comparison-list', default: [] },
+      rightItems: { type: 'array', source: 'children', selector: '.comparison-col.right .comparison-list', default: [] }
     },
 
     edit(props) {
@@ -135,42 +137,57 @@
       );
     },
 
-    save() {
-      // Return the exact HTML snippet requested (keeps class names and structure).
-      // Note: this uses static content per the user's snippet.
-      const blockProps = (wp.blockEditor && wp.blockEditor.useBlockProps && wp.blockEditor.useBlockProps.save)
-        ? wp.blockEditor.useBlockProps.save({ className: 'comparison-columns highlight-none' })
-        : { className: 'comparison-columns highlight-none' };
+    save(props) {
+      const { attributes } = props;
+      const { mainTitle, leftTitle, rightTitle, leftItems, rightItems } = attributes;
 
+      const blockProps = (wp.blockEditor && wp.blockEditor.useBlockProps && wp.blockEditor.useBlockProps.save)
+        ? wp.blockEditor.useBlockProps.save({ className: 'comparison-columns' })
+        : { className: 'comparison-columns' };
+
+      // Use RichText.Content to output saved attributes so user input persists
       return wp.element.createElement(
         'div',
         blockProps,
 
-        // Main heading
-        wp.element.createElement('h2', { className: 'comparison-heading' }, 'Greek Architecture vs. The Ages'),
+        wp.element.createElement(wp.blockEditor.RichText.Content || be.RichText.Content, {
+          tagName: 'h2',
+          className: 'comparison-heading',
+          value: mainTitle || ''
+        }),
 
-        // Grid
         wp.element.createElement(
           'div',
           { className: 'comparison-grid' },
 
-          // Left column
           wp.element.createElement(
             'div',
             { className: 'comparison-col left' },
-            wp.element.createElement('h3', { className: 'comparison-title' }, 'Greek Architecture'),
-            wp.element.createElement('ul', { className: 'comparison-list' },
-              wp.element.createElement('li', null),
-              wp.element.createElement('li', null, ' stregth.')
-            )
+            wp.element.createElement(wp.blockEditor.RichText.Content || be.RichText.Content, {
+              tagName: 'h3',
+              className: 'comparison-title',
+              value: leftTitle || ''
+            }),
+            wp.element.createElement(wp.blockEditor.RichText.Content || be.RichText.Content, {
+              tagName: 'ul',
+              className: 'comparison-list',
+              value: Array.isArray(leftItems) ? leftItems : []
+            })
           ),
 
-          // Right column
           wp.element.createElement(
             'div',
             { className: 'comparison-col right' },
-            wp.element.createElement('h3', { className: 'comparison-title' }, 'Modern Architecture'),
-            wp.element.createElement('ul', { className: 'comparison-list' })
+            wp.element.createElement(wp.blockEditor.RichText.Content || be.RichText.Content, {
+              tagName: 'h3',
+              className: 'comparison-title',
+              value: rightTitle || ''
+            }),
+            wp.element.createElement(wp.blockEditor.RichText.Content || be.RichText.Content, {
+              tagName: 'ul',
+              className: 'comparison-list',
+              value: Array.isArray(rightItems) ? rightItems : []
+            })
           )
         )
       );

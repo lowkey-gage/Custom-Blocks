@@ -7,25 +7,37 @@ export default function Edit({ attributes, setAttributes }) {
     const blockProps = useBlockProps();
 
     const onSelectImages = (newImages) => {
+        try {
+            // Temporary diagnostic to verify selection payload
+            console.log('[Interactive Gallery] Selected images:', newImages);
+        } catch (e) {}
+        const normalized = Array.isArray(newImages) ? newImages : [];
         setAttributes({
-            images: newImages.map(image => ({
-                url: image.url || image.sizes?.full?.url || '',
-                alt: image.alt || '',
-                id: image.id,
-                caption: image.caption || ''
-            })),
+            images: normalized.map(function(image) {
+                const hasSizes = image && image.sizes && image.sizes.full && image.sizes.full.url;
+                const fallbackUrl = hasSizes ? image.sizes.full.url : '';
+                return {
+                    url: (image && image.url) ? image.url : fallbackUrl,
+                    alt: (image && image.alt) ? image.alt : '',
+                    id: image && image.id,
+                    caption: (image && image.caption) ? image.caption : ''
+                };
+            }),
             currentImageIndex: 0
         });
     };
 
     const navigateImage = (direction) => {
-        const newIndex = currentImageIndex + direction;
-        if (newIndex >= 0 && newIndex < images.length) {
+        const total = Array.isArray(images) ? images.length : 0;
+        let newIndex = (typeof currentImageIndex === 'number' ? currentImageIndex : 0) + direction;
+        if (newIndex < 0) newIndex = 0;
+        if (newIndex >= total) newIndex = total - 1;
+        if (total > 0) {
             setAttributes({ currentImageIndex: newIndex });
         }
     };
 
-    if (!images.length) {
+    if (!Array.isArray(images) || images.length === 0) {
         return (
             <>
                 <InspectorControls>
@@ -93,6 +105,19 @@ export default function Edit({ attributes, setAttributes }) {
         );
     }
 
+    const safeIndex = (typeof currentImageIndex === 'number' ? currentImageIndex : 0);
+    const current = images[safeIndex];
+    if (!current) {
+        // Guard against undefined current image
+        return (
+            <div {...blockProps}>
+                <div className="interactive-gallery">
+                    <p>{__('No image at current index. Please select images.', 'custom-blocks-plugin')}</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <>
             <InspectorControls>
@@ -130,19 +155,19 @@ export default function Edit({ attributes, setAttributes }) {
                     <div className="gallery-image-container">
                         <div className="gallery-image-wrapper">
                             <img
-                                src={images[currentImageIndex].url}
-                                alt={images[currentImageIndex].alt}
+                                src={current.url}
+                                alt={current.alt}
                                 className="gallery-image"
                             />
                         </div>
                         <RichText
                             tagName="figcaption"
                             className="gallery-caption"
-                            value={images[currentImageIndex].caption}
+                            value={current.caption}
                             onChange={(caption) => {
                                 const newImages = [...images];
-                                newImages[currentImageIndex] = {
-                                    ...newImages[currentImageIndex],
+                                newImages[safeIndex] = {
+                                    ...newImages[safeIndex],
                                     caption
                                 };
                                 setAttributes({ images: newImages });
